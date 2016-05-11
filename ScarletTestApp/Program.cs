@@ -21,6 +21,7 @@ namespace ScarletTestApp
         // "E:\[SSD User Data]\Downloads\_stex-test"
         // "E:\[SSD User Data]\Desktop\Misc Stuff\ZHP\system"
         // "E:\[SSD User Data]\Downloads\SkullgirlsDDS"
+        // "E:\[SSD User Data]\Downloads\OreshikaGXTsamples\OreshikaGXTsamples"
 
         static char[] directorySeparators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         static string defaultOutputDir = "(converted)";

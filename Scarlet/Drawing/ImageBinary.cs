@@ -1160,6 +1160,7 @@ namespace Scarlet.Drawing
                 case PixelDataFormat.PixelOrderingTiled3DS: pixelOrderingFunc = new PixelOrderingDelegate(GetPixelCoordinates3DS); break;
                 case PixelDataFormat.PixelOrderingSwizzledVita: pixelOrderingFunc = new PixelOrderingDelegate(GetPixelCoordinatesSwizzledVita); break;
                 case PixelDataFormat.PixelOrderingSwizzledPSP: pixelOrderingFunc = new PixelOrderingDelegate(GetPixelCoordinatesPSP); break;
+                case PixelDataFormat.PixelOrderingSwizzledVitaAlternate: pixelOrderingFunc = new PixelOrderingDelegate(GetPixelCoordinatesSwizzledVitaAlt); break;
 
                 default: throw new Exception("Unimplemented pixel ordering mode");
             }
@@ -1191,6 +1192,14 @@ namespace Scarlet.Drawing
             52, 53, 60, 61, 54, 55, 62, 63
         };
 
+        // TODO: temporary, Oreshika testing, verify and fix me...
+        private static void GetPixelCoordinatesSwizzledVitaAlt(int origX, int origY, int width, int height, PixelDataFormat inputPixelFormat, out int transformedX, out int transformedY)
+        {
+            transformedX = origX; transformedY = origY;
+            //GetPixelCoordinatesTiledEx(transformedX, transformedY, width, height, inputPixelFormat, out transformedX, out transformedY, 8, 8, pixelOrderingTiled3DS);
+            GetPixelCoordinatesSwizzledVita(transformedX, transformedY, width, height, inputPixelFormat, out transformedX, out transformedY);
+        }
+
         private static void GetPixelCoordinatesTiled(int origX, int origY, int width, int height, PixelDataFormat inputPixelFormat, out int transformedX, out int transformedY)
         {
             GetPixelCoordinatesTiledEx(origX, origY, width, height, inputPixelFormat, out transformedX, out transformedY, 8, 8, pixelOrderingTiledDefault);
@@ -1206,7 +1215,7 @@ namespace Scarlet.Drawing
             // TODO: verify me...?
 
             PixelDataFormat inBpp = (inputPixelFormat & PixelDataFormat.MaskBpp);
-            int bitsPerPixel = Constants.RealBitsPerPixel[inBpp];
+            int bitsPerPixel = (inBpp == PixelDataFormat.Bpp0 ? 32 : Constants.RealBitsPerPixel[inBpp]);
 
             int tileWidth = (bitsPerPixel < 8 ? 32 : (16 / (bitsPerPixel / 8)));
             GetPixelCoordinatesTiledEx(origX, origY, width, height, inputPixelFormat, out transformedX, out transformedY, tileWidth, 8, null);
@@ -1229,8 +1238,8 @@ namespace Scarlet.Drawing
             // If applicable, transform by ordering table
             if (pixelOrdering != null && tileSize <= pixelOrdering.Length)
             {
-                inTileX = (pixelOrdering[inTilePixel] % 8);
-                inTileY = (pixelOrdering[inTilePixel] / 8);
+                inTileX = (pixelOrdering[inTilePixel] % tileWidth);
+                inTileY = (pixelOrdering[inTilePixel] / tileHeight);
             }
 
             // Set final image coords
@@ -1264,6 +1273,13 @@ namespace Scarlet.Drawing
         private static void GetPixelCoordinatesSwizzledVita(int origX, int origY, int width, int height, PixelDataFormat inputPixelFormat, out int transformedX, out int transformedY)
         {
             int i = (origY * width) + origX;
+
+            // TODO: feels hacky, doesn't work right? fix me? (Oreshika, lots of stuff)
+            double factor = 32.0;
+            if ((width % (int)factor) != 0)
+                width = (int)(Math.Round((width + 1) / factor) * factor);
+            if ((height % (int)factor) != 0)
+                height = (int)(Math.Round((height + 1) / factor) * factor);
 
             int min = width < height ? width : height;
             int k = (int)Math.Log(min, 2);

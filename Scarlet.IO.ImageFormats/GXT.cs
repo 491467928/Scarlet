@@ -84,8 +84,9 @@ namespace Scarlet.IO.ImageFormats
 
             ImageBinary imageBinary = new ImageBinary();
 
-            imageBinary.Width = info.GetWidth();
-            imageBinary.Height = info.GetHeight();
+            // TODO: verify me, round to multiple of 8? (Oreshika eatx_icon_confusion, icon_curse, ...)
+            imageBinary.Width = (int)(Math.Round((info.GetWidth() + 1) / 8.0) * 8);
+            imageBinary.Height = (int)(Math.Round((info.GetHeight() + 1) / 8.0) * 8);
             imageBinary.InputPixelFormat = PSVita.GetPixelDataFormat(info.GetTextureFormat());
             imageBinary.InputEndianness = Endian.LittleEndian;
             imageBinary.AddInputPixels(PixelData[infoIdx]);
@@ -104,6 +105,10 @@ namespace Scarlet.IO.ImageFormats
                     case SceGxmTextureType.Tiled:
                         // TODO: verify me!
                         imageBinary.InputPixelFormat |= PixelDataFormat.PixelOrderingTiled3DS;
+                        break;
+
+                    case SceGxmTextureType.SwizzledAlternate:
+                        imageBinary.InputPixelFormat |= PixelDataFormat.PixelOrderingSwizzledVitaAlternate;
                         break;
 
                     case SceGxmTextureType.Swizzled:

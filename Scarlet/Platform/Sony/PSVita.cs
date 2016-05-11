@@ -419,6 +419,7 @@ namespace Scarlet.Platform.Sony
         Cube = 0x40000000,
         Linear = 0x60000000,
         Tiled = 0x80000000,
+        SwizzledAlternate = 0xA0000000,     // TODO: used by Oreshika; verify me?
         LinearStrided = 0xC0000000
     };
 

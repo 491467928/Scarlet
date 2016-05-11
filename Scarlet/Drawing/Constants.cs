@@ -19,8 +19,8 @@ namespace Scarlet.Drawing
          * Grn 0000000003C00000
          * Blu 000000001C000000
          * Alp 00000000E0000000
-         * Spc 00003FFF00000000
-         * Ord 0003C00000000000
+         * Spc 00000FFF00000000
+         * Ord 0003F00000000000
          * Fil 000C000000000000
          * Rsv FFF0000000000000
          */
@@ -323,7 +323,7 @@ namespace Scarlet.Drawing
         /// <summary>
         /// Mask for extracting special format value
         /// </summary>
-        MaskSpecial = ((((ulong)1 << 14) - 1) << 32), /* 00003FFF00000000 */
+        MaskSpecial = ((((ulong)1 << 12) - 1) << 32), /* 00000FFF00000000 */
 
         /// <summary>
         /// Format has pixels in linear order
@@ -333,27 +333,32 @@ namespace Scarlet.Drawing
         /// <summary>
         /// Format has pixels in tiled order
         /// </summary>
-        PixelOrderingTiled = ((ulong)1 << 46),
+        PixelOrderingTiled = ((ulong)1 << 44),
 
         /// <summary>
         /// Format has pixels in tiled order, 3DS-style
         /// </summary>
-        PixelOrderingTiled3DS = ((ulong)1 << 47),
+        PixelOrderingTiled3DS = ((ulong)1 << 45),
 
         /// <summary>
         /// Format has pixels in swizzled order, Vita-style
         /// </summary>
-        PixelOrderingSwizzledVita = ((ulong)1 << 48),
+        PixelOrderingSwizzledVita = ((ulong)1 << 46),
 
         /// <summary>
         /// Format has pixels in swizzled order, PSP-style
         /// </summary>
-        PixelOrderingSwizzledPSP = ((ulong)1 << 49),
+        PixelOrderingSwizzledPSP = ((ulong)1 << 47),
+
+        /// <summary>
+        /// ---
+        /// </summary>
+        PixelOrderingSwizzledVitaAlternate = ((ulong)1 << 48),  // TODO: Oreshika, see elsewhere
 
         /// <summary>
         /// Mask for extracting pixel ordering value
         /// </summary>
-        MaskPixelOrdering = ((((ulong)1 << 4) - 1) << 46), /* 0003C00000000000 */
+        MaskPixelOrdering = ((((ulong)1 << 6) - 1) << 44), /* 0003F00000000000 */
 
         /// <summary>
         /// Format will not apply filtering
